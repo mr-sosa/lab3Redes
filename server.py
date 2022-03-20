@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 # Importing socket library 
-from asyncio.windows_events import NULL
 import socket
 import hashlib
 import datetime
