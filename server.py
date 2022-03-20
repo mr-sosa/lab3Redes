@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 
 # Importing socket library 
+from asyncio.windows_events import NULL
 import socket
 import hashlib
+import datetime
+import time
 from _thread import *
+from xmlrpc.client import DateTime
 
 def hash_file(filename):
    """"This function returns the SHA-1 hash
@@ -107,10 +111,17 @@ def threaded_client(conn, id):
                 res = conn.recv(1024).decode()
 
                 if res == 'OK':
+                    t1 = time.time()
                     while SendData:
                         #Now send the content of sample.txt to server
-                        conn.send(SendData)
-                        SendData = file.read(1024)  
+                        conn.send(SendData) 
+                        SendData = file.read(1024)
+                    t2 = time.time()
+                    conn.send('Fin'.encode())
+                    res = conn.recv(10).decode()
+                    #res = 'Exitoso'
+                    print(res)
+                    logs(id, res, t2-t1) 
 
            
 
@@ -120,6 +131,22 @@ def threaded_client(conn, id):
     # Close connection with client
     conn.close()
     print("\n Server closed the connection to client " + str(id) + " \n")
+
+def logs(idThread, Resultado, timeE):
+    date = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+    file = open(f"./Logs/{date}-log.txt", "a")
+
+    if archivo=="1":        
+        file.write("\n Nombre del archivo: file100MB.txt - Tamanio: 100MB")
+    elif archivo == "2":
+        file.write("\n Nombre del archivo: file250MB.txt - Tamanio: 250MB")
+    elif archivo == "3":
+        file.write("\n Nombre del archivo: sample1.txt - Tamanio: 13B")
+
+    file.write('\n Conexion con el cliente: ' + str(idThread))
+    file.write('\n La entrega del archivo fue: ' + Resultado)
+    file.write('\n El tiempo de ejecucion fue: ' + str(timeE))
+    file.close()
 
 # Now we do not know when client will concatct server so server should be listening contineously  
 while True:
@@ -131,12 +158,9 @@ while True:
     print('Connected to: ' + addr[0] + ':' + str(addr[1]))
     if str(len(listThreads)) == clients:
         for l in range(len(listThreads)):
-            start_new_thread(threaded_client, (listThreads[l], l+1))
-        
+            start_new_thread(threaded_client, (listThreads[l], l+1))       
     
     print('Thread Number: ' + str(ThreadCount))
     ThreadCount  += 1
     # Come out from the infinite while loop as the file has been copied from client.
     #break
-
-s.close()

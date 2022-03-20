@@ -50,25 +50,47 @@ hash_server = s.recv(40).decode()
 print("\n\n Hash server: " + hash_server)
 
 s.send("OK".encode())
-
+"""
 # Receive any data from client side
 RecvData = s.recv(1024)
-while RecvData:
-    h.update(RecvData)
-    file.write(RecvData)
-    RecvData = s.recv(1024)
+print('a')
 
+ while RecvData:
+    print('b')
+    h.update(RecvData)
+    print('c')
+    file.write(RecvData)
+    print('d')
+    RecvData = s.recv(1024) """
+
+while True:
+    # read 1024 bytes from the socket (receive)
+    bytes_read = s.recv(1024)
+    if bytes_read.decode() == 'Fin':
+        # nothing is received
+        #file transmitting is done
+        break
+        # write to the file the bytes we just received
+    h.update(bytes_read)
+    file.write(bytes_read)
+        # update the progress bar
+    
+# Close the file opened at server side once copy is completed
+file.close()
+print("\n\n File has been copied successfully \n")
+
+print('holaa')
 hash_f = h.hexdigest()
 print("\n\n Hash file: " + hash_f)
 
 if hash_f == hash_server:
     print("\n\n No se modifico el documento.")
+    s.send("Exitoso".encode())
 else:
     print("\n\n ERROR: se modifico el documento")
+    s.send("Fallido".encode())
 
-# Close the file opened at server side once copy is completed
-file.close()
-print("\n\n File has been copied successfully \n")
+
 
 # Close the connection from client side
 s.close()
