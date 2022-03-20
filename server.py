@@ -111,13 +111,14 @@ def threaded_client(conn, id):
                 res = conn.recv(1024).decode()
 
                 if res == 'OK':
-                    t1 = time.time()
+                    t1 = int(round(time.time() * 1000))
                     while SendData:
                         #Now send the content of sample.txt to server
                         conn.send(SendData) 
                         SendData = file.read(1024)
-                    t2 = time.time()
+                    t2 = int(round(time.time() * 1000))
                     conn.send('Fin'.encode())
+                    conn.send(archivo.encode())
                     res = conn.recv(10).decode()
                     #res = 'Exitoso'
                     print(res)
@@ -134,7 +135,7 @@ def threaded_client(conn, id):
 
 def logs(idThread, Resultado, timeE):
     date = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-    file = open(f"./Logs/{date}-log.txt", "a")
+    file = open(f"./ArchivosServidor/Logs/{date}-log.txt", "a")
 
     if archivo=="1":        
         file.write("\n Nombre del archivo: file100MB.txt - Tamanio: 100MB")
@@ -145,7 +146,7 @@ def logs(idThread, Resultado, timeE):
 
     file.write('\n Conexion con el cliente: ' + str(idThread))
     file.write('\n La entrega del archivo fue: ' + Resultado)
-    file.write('\n El tiempo de ejecucion fue: ' + str(timeE))
+    file.write('\n El tiempo de ejecucion fue: ' + str(timeE) + " ms")
     file.close()
 
 # Now we do not know when client will concatct server so server should be listening contineously  
