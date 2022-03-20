@@ -118,7 +118,6 @@ def threaded_client(conn, id):
                         res = conn.recv(10).decode()
                     t2 = int(round(time.time() * 1000))
                     conn.send('Fin'.encode())
-                    conn.send(str(hash_value).encode())
                     res = conn.recv(1024).decode()
 
                     if res == 'OK':
