@@ -26,23 +26,30 @@ PORT = 9898
 s.connect((ServerIp, PORT))
 
 #Open one recv.txt file in write mode
-file = open("./ArchivosCliente/recv.txt", "wb")
-print("\n Copied file name will be recv.txt at server side\n")
+#file = open("./ArchivosCliente/recv.txt", "wb")
+#print("\n Copied file name will be recv.txt at server side\n")
 
 # Send data
 message = 'Listo'
-print("\n" + message)
+print("\n " + message)
 s.send(message.encode())
 
 # Look for the response
+conexiones = s.recv(4).decode()
+print("\n\n Conexiones: " + conexiones)
+
+s.send("OK".encode())
+
 client = s.recv(4).decode()
-print("\n\n Clients: " + client)
-#conexiones = sock.recv(1024).decode()
-#print("Co"+conexiones)
-#file = open(f"./ArchivosRecibidos/Cliente{client}-Prueba-{conexiones}.txt", "wb") 
+print("\n\n Id Thread: "+client)
+file = open(f"./ArchivosRecibidos/Cliente{client}-Prueba-{conexiones}.txt", "wb") 
+
+s.send("OK".encode())
 
 hash_server = s.recv(40).decode()
 print("\n\n Hash server: " + hash_server)
+
+s.send("OK".encode())
 
 # Receive any data from client side
 RecvData = s.recv(1024)
