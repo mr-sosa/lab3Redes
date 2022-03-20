@@ -23,7 +23,7 @@ else:
 s = socket.socket()
 
 # Lets choose one port and connect to that port
-PORT = 9898
+PORT = 9899
 
 # Lets connect to that port where server may be running
 s.connect((ServerIp, PORT))
@@ -93,9 +93,11 @@ while True:
         # write to the file the bytes we just received
     h.update(bytes_read)
     file.write(bytes_read)
+    s.send("OK".encode())
         # update the progress bar
-
 t2 = int(round(time.time() * 1000))
+
+s.send("OK".encode())
 
 archivo = s.recv(4).decode()
 

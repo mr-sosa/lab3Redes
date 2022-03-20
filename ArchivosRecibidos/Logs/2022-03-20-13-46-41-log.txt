@@ -1,0 +1,4 @@
+
+ Conexion con el cliente: 1
+ La entrega del archivo fue: Exitoso
+ El tiempo de ejecucion fue: 1 ms

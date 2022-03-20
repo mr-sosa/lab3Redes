@@ -36,7 +36,7 @@ ThreadCount = 1
 listThreads = []
 
 # Lets choose one port and start listening on that port
-PORT = 9898
+PORT = 9899
 print("\n Server is listing on port :", PORT, "\n")
 
 # Now we need to bind to the above port at server side
@@ -115,13 +115,18 @@ def threaded_client(conn, id):
                         #Now send the content of sample.txt to server
                         conn.send(SendData) 
                         SendData = file.read(1024)
+                        res = conn.recv(10).decode()
                     t2 = int(round(time.time() * 1000))
                     conn.send('Fin'.encode())
-                    conn.send(archivo.encode())
-                    res = conn.recv(10).decode()
-                    #res = 'Exitoso'
-                    print(res)
-                    logs(id, res, t2-t1) 
+                    conn.send(str(hash_value).encode())
+                    res = conn.recv(1024).decode()
+
+                    if res == 'OK':
+                        conn.send(archivo.encode())
+                        res = conn.recv(10).decode()
+                        #res = 'Exitoso'
+                        print(res)
+                        logs(id, res, t2-t1) 
 
            
 
