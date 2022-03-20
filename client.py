@@ -5,25 +5,8 @@ import socket
 import sys
 import hashlib
 
-def hash_file(filename):
-   """"This function returns the SHA-1 hash
-   of the file passed into it"""
-
-   # make a hash object
-   h = hashlib.sha1()
-   print(h)
-   # open file for reading in binary mode
-   with open(filename,'rb') as f:
-
-       # loop till the end of the file
-       chunk = 0
-       while chunk != b'':
-           # read only 1024 bytes at a time
-           chunk = f.read(1024)
-           h.update(chunk)
-
-   # return the hex representation of digest
-   return h.hexdigest()
+h = hashlib.sha1()
+chunk = 0
 
 # Lets catch the 1st argument as server ip
 if (len(sys.argv) > 1):
@@ -64,20 +47,21 @@ print("\n\n Hash server: " + hash_server)
 # Receive any data from client side
 RecvData = s.recv(1024)
 while RecvData:
+    h.update(RecvData)
     file.write(RecvData)
     RecvData = s.recv(1024)
 
-hash_f = hash_file('./ArchivosServidor/sample1.txt')
+hash_f = h.hexdigest()
 print("\n\n Hash file: " + hash_f)
 
-#if hash_f == hash_server:
-#    print("No se modifico el documento.")
-#else:
-#    print("ERROR: se modifico el documento")
+if hash_f == hash_server:
+    print("\n\n No se modifico el documento.")
+else:
+    print("\n\n ERROR: se modifico el documento")
 
 # Close the file opened at server side once copy is completed
 file.close()
-print("\n File has been copied successfully \n")
+print("\n\n File has been copied successfully \n")
 
 # Close the connection from client side
 s.close()

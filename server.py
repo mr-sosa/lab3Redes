@@ -10,7 +10,6 @@ def hash_file(filename):
 
    # make a hash object
    h = hashlib.sha1()
-   print(h)
    # open file for reading in binary mode
    with open(filename,'rb') as f:
 
@@ -72,7 +71,7 @@ while True:
 
     if estado == 'Listo':
         conn.send(str(clients).encode())
-        print(str(hash_value))
+        
         conn.send(str(hash_value).encode())
 
         while SendData:
